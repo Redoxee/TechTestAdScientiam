@@ -33,7 +33,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var products = _productHandler.GetAsync(new Guid());
+        var products = await _productHandler.GetAsync(new Guid());
         return Ok(products);
     }
 
@@ -43,7 +43,7 @@ public class ProductController : ControllerBase
     /// <param name="id">The Guid of product.</param>
     /// <returns>The specified <see cref="ProductDto"/>.</returns>
     [HttpGet("{id:guid}")]
-    public IActionResult Get([FromRoute] Guid id)
+    public async Task<IActionResult> Get([FromRoute] Guid id)
     {
         return Ok();
     }
@@ -68,7 +68,7 @@ public class ProductController : ControllerBase
     /// <param name="productDto">The product to update.</param>
     /// <returns>The product with data updated.</returns>
     [HttpPut("{id:guid}")]
-    public IActionResult Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
+    public async Task<IActionResult> Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
     {
         throw new NotImplementedException();
     }
