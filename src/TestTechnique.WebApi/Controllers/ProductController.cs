@@ -33,7 +33,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var products = await _productHandler.GetAsync(new Guid());
+        var products = await _productHandler.GetAllAsync();
         return Ok(products);
     }
 
@@ -45,7 +45,8 @@ public class ProductController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        return Ok();
+        var product = await _productHandler.GetAsync(id);
+        return Ok(product);
     }
 
     /// <summary>
