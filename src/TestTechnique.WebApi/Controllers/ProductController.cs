@@ -70,7 +70,22 @@ public class ProductController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
     {
-        throw new NotImplementedException();
+        // TODO : Should we check if id and productDto.Id match ?
+        try
+        {
+            var updatedProduct = await _productHandler.UpdateAsync(productDto);
+            return Ok(updatedProduct);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            _logger.LogError($"Product not found while updating ID:{productDto.Id}", ex);
+            return NotFound(id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error while updating product {productDto.Id}", ex);
+            return UnprocessableEntity(id);
+        }
     }
 
     /// <summary>
