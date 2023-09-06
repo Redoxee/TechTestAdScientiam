@@ -49,6 +49,7 @@ public class ProductController : ControllerBase
         var product = await _productHandler.GetAsync(id);
         if (product == null)
         {
+            _logger.LogWarning($"Product not found Id:{id}");
             return NotFound();
         }
 
@@ -63,9 +64,9 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromQuery] ProductDto productDto)
     {
-        // await _productRepository.AddAsync(product);
-        return NoContent();
-        _logger.LogInformation($"The {productDto.Name} has been added with the ID:{productDto.Id}.");
+        var productId = await _productHandler.AddAsync(productDto);
+        _logger.LogInformation($"The {productDto.Name} has been added with the Id:{productDto.Id}.");
+        return Ok(productId);
     }
 
     /// <summary>
@@ -81,17 +82,19 @@ public class ProductController : ControllerBase
         var productToUpdate = await _productHandler.GetAsync(id);
         if (productToUpdate == null)
         {
+            _logger.LogError($"Product not found Id:{id}");
             return NotFound();
         }
 
         try
         {
             var updatedProduct = await _productHandler.UpdateAsync(productDto);
+            _logger.LogInformation($"Updated product Id:{id}");
             return Ok(updatedProduct);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error while updating product {productDto.Id}", ex);
+            _logger.LogError($"Error while updating product Id:{productDto.Id}", ex);
             return UnprocessableEntity(id);
         }
     }
