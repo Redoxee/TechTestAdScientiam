@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TestTechnique.Application.Commons;
 using TestTechnique.Application.Contracts;
+using TestTechnique.Application.Exceptions;
 
 namespace TestTechnique.WebApi.Controllers;
 
@@ -46,6 +47,11 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
         var product = await _productHandler.GetAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
         return Ok(product);
     }
 
