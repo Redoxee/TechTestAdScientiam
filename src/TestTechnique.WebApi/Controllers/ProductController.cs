@@ -64,9 +64,10 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromQuery] ProductDto productDto)
     {
+        // TODO : should we test if the element is already present ?
         var productId = await _productHandler.AddAsync(productDto);
         _logger.LogInformation($"The {productDto.Name} has been added with the Id:{productDto.Id}.");
-        return Ok(productId);
+        return CreatedAtAction("Get", productId);
     }
 
     /// <summary>
