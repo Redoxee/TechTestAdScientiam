@@ -72,15 +72,16 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
     {
         // TODO : Should we check if id and productDto.Id match ?
+        var productToUpdate = await _productHandler.GetAsync(id);
+        if (productToUpdate == null)
+        {
+            return NotFound();
+        }
+
         try
         {
             var updatedProduct = await _productHandler.UpdateAsync(productDto);
             return Ok(updatedProduct);
-        }
-        catch (EntityNotFoundException ex)
-        {
-            _logger.LogError($"Product not found while updating ID:{productDto.Id}", ex);
-            return NotFound(id);
         }
         catch (Exception ex)
         {
