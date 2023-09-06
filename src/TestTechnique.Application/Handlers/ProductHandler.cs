@@ -47,7 +47,15 @@ public class ProductHandler : IProductHandler
 
     public async Task<ProductDto> UpdateAsync(ProductDto productDto)
     {
-        throw new NotImplementedException();
+        var product = await _productRepository.GetAsync(productDto.Id);
+        if (product == null)
+        {
+            throw new EntityNotFoundException($"Product not found Id:{productDto.Id}");
+        }
+
+        productDto.CopyTo(product);
+        await _productRepository.UpdateAsync(product);
+        return productDto;
     }
 
     public async Task DeleteAsync(Guid id)

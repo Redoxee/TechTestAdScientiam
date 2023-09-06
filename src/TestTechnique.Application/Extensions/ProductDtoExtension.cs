@@ -1,4 +1,5 @@
-﻿using TestTechnique.Application.Contracts;
+﻿using System.Runtime.CompilerServices;
+using TestTechnique.Application.Contracts;
 using TestTechnique.Domain.Models;
 
 namespace TestTechnique.Application.Extensions
@@ -33,6 +34,17 @@ namespace TestTechnique.Application.Extensions
                     Name = product.Brand,
                 }
             };
+        }
+
+        public static void CopyTo(this ProductDto product, Product other)
+        {
+            other.Id = product.Id;
+            other.Name = product.Name;
+            other.Description = product.Description;
+            other.Price = product.Price;
+            // TODO : I'm still not sure about how to handle Brand
+            other.Brand.Name = product.Brand;
+            other.Brand.Id = Guid.Empty;
         }
     }
 }
