@@ -28,24 +28,37 @@ public class ProductHandler : IProductHandler
         var product = await _productRepository.GetAsync(id);
         if (product == null)
         {
-            throw new EntityNotFoundException($"Product not fond Id:{id}");
+            throw new EntityNotFoundException($"Product not found Id:{id}");
         }
 
         return product.From();
     }
 
-    public Task<Guid> AddAsync(ProductDto productDto)
+    public async Task<Guid> AddAsync(ProductDto productDto)
+    {
+        var alreadyPresentProduct = await _productRepository.GetAsync(productDto.Id);
+        if(alreadyPresentProduct != null)
+        {
+            throw new EntityAlreadyExistException($"Product already exist Id:{productDto.Id}");
+        }
+
+        return await _productRepository.AddAsync(productDto.To());
+    }
+
+    public async Task<ProductDto> UpdateAsync(ProductDto productDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task<ProductDto> UpdateAsync(ProductDto productDto)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var product = await _productRepository.GetAsync(id);
+        if (product == null)
+        {
+            throw new EntityNotFoundException($"Product not found Id:{id}");
+        }
 
-    public Task DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
+        await _productRepository.DeleteAsync(product);
+        return;
     }
 }
