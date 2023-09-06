@@ -104,9 +104,15 @@ public class ProductController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete([FromHeader] Guid id)
     {
-        var product = new ProductDto { Id = id };
-        // await _productHandler.DeleteAsync(product);
-        Console.Write("The product with ID: {0} has been deleted.", id);
-        return NotFound();
+        var existingProduct = await _productHandler.GetAsync(id); 
+        if (existingProduct == null) 
+        {
+            _logger.LogError($"Product not found Id:{id}");
+            return NotFound();
+        }
+
+        await _productHandler.DeleteAsync(id);
+        _logger.LogInformation($"The product with Id: {id} has been deleted.");
+        return NoContent();
     }
 }
