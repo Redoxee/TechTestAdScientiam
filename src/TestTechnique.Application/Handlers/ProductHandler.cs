@@ -1,6 +1,8 @@
 using TestTechnique.Application.Commons;
 using TestTechnique.Application.Contracts;
 using TestTechnique.Application.Repositories;
+using TestTechnique.Application.Extensions;
+using TestTechnique.Application.Exceptions;
 
 namespace TestTechnique.Application.Handlers;
 
@@ -15,14 +17,21 @@ public class ProductHandler : IProductHandler
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
-    public Task<IEnumerable<ProductDto>> GetAllAsync()
+    public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var allProduct = await _productRepository.GetAllAsync();
+        return allProduct.Select(product => product.From());
     }
 
-    public Task<ProductDto> GetAsync(Guid id)
+    public async Task<ProductDto> GetAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var product = await _productRepository.GetAsync(id);
+        if (product == null)
+        {
+            throw new EntityNotFoundException($"Product not fond Id:{id}");
+        }
+
+        return product.From();
     }
 
     public Task<Guid> AddAsync(ProductDto productDto)
