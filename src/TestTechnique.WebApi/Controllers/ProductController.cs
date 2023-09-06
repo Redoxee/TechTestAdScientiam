@@ -89,9 +89,10 @@ public class ProductController : ControllerBase
 
         try
         {
-            var updatedProduct = await _productHandler.UpdateAsync(productDto);
+            await _productHandler.UpdateAsync(productDto);
             _logger.LogInformation($"Updated product Id:{id}");
-            return Ok(updatedProduct);
+            // TODO : it feel weird to return the sent productDto when we could return the one given by _productHandler.UpdateAsync
+            return Ok(productDto);
         }
         catch (Exception ex)
         {
