@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TestTechnique.Application.Repositories;
 using TestTechnique.Domain.Models;
 
@@ -21,60 +22,120 @@ public class ProductRepository : IProductRepository
     /// <inheritdoc />
     public Task<IEnumerable<Product>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var task = new Task<IEnumerable<Product>>(() => {
+            return _dbContext.Products.AsNoTracking().Include(p => p.Brand).ToList();
+        });
+
+        task.Start();
+        return task;
     }
 
     /// <inheritdoc />
     public Task<Product> GetAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return GetAsync(id, false);
     }
 
     /// <inheritdoc />
     public Task<Product> GetAsync(Guid id, bool asTracking)
     {
-        throw new NotImplementedException();
+        var task = new Task<Product>(() => {
+            if (asTracking)
+            {
+                return _dbContext.Products.AsTracking().Include(product => product.Brand).Single((product) => product.Id == id);
+            }
+            else
+            {
+				return _dbContext.Products.AsNoTracking().Include(product => product.Brand).Single((product) => product.Id == id);
+			}
+        });
+        
+        task.Start();
+        return task;
     }
 
     /// <inheritdoc />
     public Task<Guid> AddAsync(Product entity)
     {
-        throw new NotImplementedException();
+        var task = new Task<Guid>(() =>
+        {
+            _dbContext.Add(entity);
+            return entity.Id;
+        });
+
+        task.Start();
+        return task;
     }
 
     /// <inheritdoc />
     public Task<IEnumerable<Guid>> AddAsync(IEnumerable<Product> entities)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task<IEnumerable<Guid>>(() =>
+		{
+			_dbContext.Add(entities);
+			return entities.Select(entity => entity.Id);
+		});
+
+		task.Start();
+		return task;
+	}
 
     /// <inheritdoc />
     public Task UpdateAsync(Product entity)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task(() =>
+		{
+			_dbContext.Update(entity);
+		});
+
+		task.Start();
+		return task;
+	}
 
     /// <inheritdoc />
     public Task UpdateAsync(IEnumerable<Product> entities)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task(() =>
+		{
+			_dbContext.Update(entities);
+		});
+
+		task.Start();
+		return task;
+	}
 
     /// <inheritdoc />
     public Task DeleteAsync(Product entity)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task(() =>
+		{
+			_dbContext.Remove(entity);
+		});
+
+		task.Start();
+		return task;
+	}
 
     /// <inheritdoc />
     public Task DeleteAsync(IEnumerable<Product> entities)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task(() =>
+		{
+			_dbContext.Remove(entities);
+		});
+
+		task.Start();
+		return task;
+	}
 
     /// <inheritdoc />
     public Task<Product> GetByNameAsync(string name)
-    {
-        throw new NotImplementedException();
-    }
+	{
+		var task = new Task<Product>(() => {
+			return _dbContext.Products.AsNoTracking().Include(p => p.Brand).Single((product) => product.Name == name);
+		});
+
+		task.Start();
+		return task;
+	}
 }
