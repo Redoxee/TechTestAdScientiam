@@ -15,8 +15,8 @@ namespace TestTechnique.Application.Extensions
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                // TODO : is the right way to convert brand to string or should it be handled by ToString ?
-                Brand = product.Brand.Name,
+                // TODO : is the right way to convert brand to string or should it be handled by ToString ? Also what to do when there's no brand ?
+                Brand = product.Brand?.Name ?? "",
             };
         }
 
