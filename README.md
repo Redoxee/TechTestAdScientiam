@@ -25,6 +25,8 @@ La stack technique est décrite comme telle :
   les tests existants dans 'ProductControllerTest').
 - Implémenter le 'ProductHandler'.
 - Implémenter le 'ProductRepository'.
+- CUSTOM : pour faire fonctioner le projet, j'ai du bouger data.db dans le projet WebApi, s'aranger pour que la db reste dans sons projet Persistence
+- J'ai aussi changé les id pour retirer les '"' il faut que je le gere, probablement avec https://learn.microsoft.com/en-us/ef/core/modeling/value-conversions?tabs=data-annotations
 - Lors des appels API sur 'ProductController', le champ 'Brand' ne doit pas être null.
 
 ## Tâches optionelles
