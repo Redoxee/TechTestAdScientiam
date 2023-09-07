@@ -42,7 +42,10 @@ public class ProductHandler : IProductHandler
             throw new EntityAlreadyExistException($"Product already exist Id:{productDto.Id}");
         }
 
-        return await _productRepository.AddAsync(productDto.To());
+        var result = await _productRepository.AddAsync(productDto.To());
+        await _unitOfWork.SaveChangesAsync();
+
+        return result;
     }
 
     public async Task<ProductDto> UpdateAsync(ProductDto productDto)
@@ -53,9 +56,10 @@ public class ProductHandler : IProductHandler
             throw new EntityNotFoundException($"Product not found Id:{productDto.Id}");
         }
 
-        productDto.CopyTo(product);
+        product = productDto.To();
         await _productRepository.UpdateAsync(product);
-        return productDto;
+        await _unitOfWork.SaveChangesAsync();
+        return product.From();
     }
 
     public async Task DeleteAsync(Guid id)
@@ -67,6 +71,7 @@ public class ProductHandler : IProductHandler
         }
 
         await _productRepository.DeleteAsync(product);
+        await _unitOfWork.SaveChangesAsync();
         return;
     }
 }
