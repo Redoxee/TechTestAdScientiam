@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TestTechnique.Application.Commons;
 using TestTechnique.Application.Contracts;
+using TestTechnique.Application.Exceptions;
 using TestTechnique.WebApi.Controllers;
 using Xunit;
 
@@ -64,7 +65,7 @@ public class ProductControllerTest
         // Arrange
         _productHandler
             .Setup(x => x.GetAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(value: null);
+            .ThrowsAsync(new EntityNotFoundException());
 
         // Act
         var response = await _productController.Get(Guid.NewGuid());
@@ -100,7 +101,8 @@ public class ProductControllerTest
             .Setup(x => x.GetAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new ProductDto());
         _productHandler
-            .Setup(x => x.UpdateAsync(It.IsAny<ProductDto>()));
+            .Setup(x => x.UpdateAsync(It.IsAny<ProductDto>()))
+            .ReturnsAsync(new ProductDto());
 
         // Act
         var response = await _productController.Put(Guid.NewGuid(), new ProductDto());
@@ -117,10 +119,8 @@ public class ProductControllerTest
     {
         // Arrange
         _productHandler
-            .Setup(x => x.GetAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(value: null);
-        _productHandler
-            .Setup(x => x.UpdateAsync(It.IsAny<ProductDto>()));
+            .Setup(x => x.UpdateAsync(It.IsAny<ProductDto>()))
+			.ThrowsAsync(new EntityNotFoundException());
 
         // Act
         var response = await _productController.Put(Guid.NewGuid(), new ProductDto());
@@ -152,11 +152,9 @@ public class ProductControllerTest
     public async Task Delete_NotFound()
     {
         // Arrange
-        _productHandler
-            .Setup(x => x.GetAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(value: null);
-        _productHandler
-            .Setup(x => x.DeleteAsync(It.IsAny<Guid>()));
+		_productHandler
+            .Setup(x => x.DeleteAsync(It.IsAny<Guid>()))
+			.ThrowsAsync(new EntityNotFoundException());
 
         // Act
         var response = await _productController.Delete(Guid.NewGuid());
