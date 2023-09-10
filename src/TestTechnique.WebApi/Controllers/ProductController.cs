@@ -46,14 +46,16 @@ public class ProductController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        var product = await _productHandler.GetAsync(id);
-        if (product == null)
+        try
         {
-            _logger.LogWarning($"Product not found Id:{id}");
+            var product = await _productHandler.GetAsync(id);
+            return Ok(product);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            _logger.LogWarning($"Product not found Id:{id}", ex);
             return NotFound();
         }
-
-        return Ok(product);
     }
 
     /// <summary>
@@ -79,20 +81,16 @@ public class ProductController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
     {
-        // TODO : Should we check if id and productDto.Id match ?
-        var productToUpdate = await _productHandler.GetAsync(id);
-        if (productToUpdate == null)
-        {
-            _logger.LogError($"Product not found Id:{id}");
-            return NotFound();
-        }
-
         try
         {
             await _productHandler.UpdateAsync(productDto);
             _logger.LogInformation($"Updated product Id:{id}");
             // TODO : it feel weird to return the sent productDto when we could return the one given by _productHandler.UpdateAsync
             return Ok(productDto);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
         }
         catch (Exception ex)
         {

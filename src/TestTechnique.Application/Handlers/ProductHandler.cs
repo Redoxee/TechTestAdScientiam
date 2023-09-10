@@ -26,10 +26,6 @@ public class ProductHandler : IProductHandler
     public async Task<ProductDto> GetAsync(Guid id)
     {
         var product = await _productRepository.GetAsync(id);
-        if (product == null)
-        {
-            throw new EntityNotFoundException($"Product not found Id:{id}");
-        }
 
         return product.From();
     }

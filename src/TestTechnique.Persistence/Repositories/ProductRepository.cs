@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TestTechnique.Application.Exceptions;
 using TestTechnique.Application.Repositories;
 using TestTechnique.Domain.Models;
 
@@ -40,14 +41,22 @@ public class ProductRepository : IProductRepository
     public Task<Product> GetAsync(Guid id, bool asTracking)
     {
         var task = new Task<Product>(() => {
-            if (asTracking)
+            try
             {
-                return _dbContext.Products.AsTracking().Include(product => product.Brand).Single((product) => product.Id == id);
+                if (asTracking)
+                {
+                    return _dbContext.Products.AsTracking().Include(product => product.Brand).Single((product) => product.Id == id);
+                }
+                else
+                {
+                    return _dbContext.Products.AsNoTracking().Include(product => product.Brand).Single((product) => product.Id == id);
+                }
+
             }
-            else
+            catch (InvalidOperationException ex)
             {
-				return _dbContext.Products.AsNoTracking().Include(product => product.Brand).Single((product) => product.Id == id);
-			}
+                throw new EntityNotFoundException($"Entity not found Id:{id}", ex);
+            }
         });
         
         task.Start();
@@ -59,7 +68,7 @@ public class ProductRepository : IProductRepository
     {
         var task = new Task<Guid>(() =>
         {
-            _dbContext.Add(entity);
+            _dbContext.Products.Add(entity);
             return entity.Id;
         });
 
@@ -72,7 +81,7 @@ public class ProductRepository : IProductRepository
 	{
 		var task = new Task<IEnumerable<Guid>>(() =>
 		{
-			_dbContext.Add(entities);
+			_dbContext.Products.AddRange(entities);
 			return entities.Select(entity => entity.Id);
 		});
 
@@ -85,7 +94,7 @@ public class ProductRepository : IProductRepository
 	{
 		var task = new Task(() =>
 		{
-			_dbContext.Update(entity);
+			_dbContext.Products.Update(entity);
 		});
 
 		task.Start();
@@ -97,7 +106,7 @@ public class ProductRepository : IProductRepository
 	{
 		var task = new Task(() =>
 		{
-			_dbContext.Update(entities);
+			_dbContext.Products.UpdateRange(entities);
 		});
 
 		task.Start();
@@ -109,7 +118,7 @@ public class ProductRepository : IProductRepository
 	{
 		var task = new Task(() =>
 		{
-			_dbContext.Remove(entity);
+			_dbContext.Products.Remove(entity);
 		});
 
 		task.Start();
@@ -121,7 +130,7 @@ public class ProductRepository : IProductRepository
 	{
 		var task = new Task(() =>
 		{
-			_dbContext.Remove(entities);
+			_dbContext.Products.RemoveRange(entities);
 		});
 
 		task.Start();
