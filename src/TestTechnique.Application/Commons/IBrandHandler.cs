@@ -7,7 +7,7 @@ namespace TestTechnique.Application.Commons;
 /// <summary>
 /// An handler for requests on the <see cref="Brand"/> repository.
 /// </summary>
-internal interface IBrandHandler
+public interface IBrandHandler
 {
 	/// <summary>
 	/// Get all brand from brand repository.
