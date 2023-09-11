@@ -5,7 +5,7 @@ using TestTechnique.Domain.Models;
 
 namespace TestTechnique.Persistence.Repositories;
 
-internal class BrandRepository : IBrandRepository
+public class BrandRepository : IBrandRepository
 {
 	private readonly TestTechniqueDbContext _dbContext;
 
