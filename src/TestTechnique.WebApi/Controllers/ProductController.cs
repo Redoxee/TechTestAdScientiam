@@ -83,10 +83,9 @@ public class ProductController : ControllerBase
     {
         try
         {
-            await _productHandler.UpdateAsync(productDto);
+            var updatedProduct = await _productHandler.UpdateAsync(productDto);
             _logger.LogInformation($"Updated product Id:{id}");
-            // TODO : it feel weird to return the sent productDto when we could return the one given by _productHandler.UpdateAsync
-            return Ok(productDto);
+            return Ok(updatedProduct);
         }
         catch (EntityNotFoundException)
         {
