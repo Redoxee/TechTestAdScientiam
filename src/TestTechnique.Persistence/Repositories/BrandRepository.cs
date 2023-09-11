@@ -139,11 +139,18 @@ public class BrandRepository : IBrandRepository
 	/// <inheritdoc />
 	public Task<Brand> GetBrandByName(string name)
 	{
-		var task = new Task<Brand>(() => {
-			return _dbContext.Brands.AsNoTracking().Single((brand) => brand.Name == name);
+		var task = Task.Run<Brand>(() =>
+		{
+			try
+			{
+				return _dbContext.Brands.AsNoTracking().Single((brand) => brand.Name == name);
+			}
+			catch (InvalidOperationException)
+			{
+				return null;
+			}
 		});
 
-		task.Start();
 		return task;
 	}
 }

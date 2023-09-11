@@ -55,7 +55,9 @@ public class ProductRepository : IProductRepository
             }
             catch (InvalidOperationException ex)
             {
-                throw new EntityNotFoundException($"Entity not found Id:{id}", ex);
+                // TODO : Remove log or convert it to Logger.
+                Console.WriteLine($"Entity not found Id:{id}", ex);
+                return null;
             }
         });
         
@@ -140,11 +142,18 @@ public class ProductRepository : IProductRepository
     /// <inheritdoc />
     public Task<Product> GetByNameAsync(string name)
 	{
-		var task = new Task<Product>(() => {
-			return _dbContext.Products.AsNoTracking().Include(p => p.Brand).Single((product) => product.Name == name);
+        var task = Task.Run<Product>(() =>
+        {
+            try
+            {
+                return _dbContext.Products.AsNoTracking().Include(p => p.Brand).Single((product) => product.Name == name);
+			}
+			catch (InvalidOperationException)
+			{
+				return null;
+			}
 		});
 
-		task.Start();
 		return task;
 	}
 }
