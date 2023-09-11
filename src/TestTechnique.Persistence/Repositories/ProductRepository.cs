@@ -68,13 +68,13 @@ public class ProductRepository : IProductRepository
     /// <inheritdoc />
     public Task<Guid> AddAsync(Product entity)
     {
-        var task = new Task<Guid>(() =>
+        var task = Task.Run(() =>
         {
             _dbContext.Products.Add(entity);
+            _dbContext.Entry(entity.Brand).State = EntityState.Unchanged;
             return entity.Id;
         });
 
-        task.Start();
         return task;
     }
 
