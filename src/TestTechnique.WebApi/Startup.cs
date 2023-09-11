@@ -30,9 +30,11 @@ public class Startup
 
         // Handlers
         services.AddScoped<IProductHandler, ProductHandler>();
+        services.AddScoped <IBrandHandler, BrandHandler>();
 
         // Repositories
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IBrandRepository, BrandRepository>();
         
         // Others services
         services.AddScoped<IUnitOfWork, UnitOfWork>();
