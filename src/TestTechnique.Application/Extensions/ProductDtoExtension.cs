@@ -5,7 +5,6 @@ namespace TestTechnique.Application.Extensions;
 
 internal static class ProductDtoExtension
 {
-    // TODO : is it the right place to declare this relation ?
     public static ProductDto From(this Product product)
     {
         return new ProductDto
@@ -19,19 +18,14 @@ internal static class ProductDtoExtension
         };
     }
 
-    public static Product To(this ProductDto product) {
+    public static Product To(this ProductDto product, Brand brand) {
         return new Product
         {
             Id = product.Id,
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,
-            // TODO : there's definitely something missing in this conversion concerning the Brand
-            Brand = new Brand
-            {
-                Id = Guid.Empty,
-                Name = product.Brand,
-            }
+            Brand = brand
         };
     }
 
