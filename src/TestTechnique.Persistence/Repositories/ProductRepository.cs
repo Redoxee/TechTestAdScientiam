@@ -94,12 +94,12 @@ public class ProductRepository : IProductRepository
     /// <inheritdoc />
     public Task UpdateAsync(Product entity)
 	{
-		var task = new Task(() =>
+		var task = Task.Run(() =>
 		{
-			_dbContext.Products.Update(entity);
+            var data = _dbContext.Products.AsTracking().Single(e => e.Id == entity.Id);
+            entity.CopyTo(data);
 		});
 
-		task.Start();
 		return task;
 	}
 
