@@ -28,4 +28,13 @@ public class Product : IEquatable<Product>
     {
         return HashCode.Combine(Id, Name, Description, Price);
     }
+
+    public void CopyTo(Product other)
+    {
+        other.Id = Id;
+        other.Name = Name;
+        other.Description = Description;
+        other.Price = Price;
+        other.Brand = Brand;
+    }
 }
