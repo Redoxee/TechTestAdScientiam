@@ -28,15 +28,4 @@ internal static class ProductDtoExtension
             Brand = brand
         };
     }
-
-    public static void CopyTo(this ProductDto product, Product other)
-    {
-        other.Id = product.Id;
-        other.Name = product.Name;
-        other.Description = product.Description;
-        other.Price = product.Price;
-        // TODO : I'm still not sure about how to handle Brand
-        other.Brand.Name = product.Brand;
-        other.Brand.Id = Guid.Empty;
-    }
 }
