@@ -66,7 +66,12 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromQuery] ProductDto productDto)
     {
-        // TODO : should we test if the element is already present ?
+        // TODO : It look like a middleware pattern could be usefull here
+        if (productDto.Brand == null)
+        {
+            return BadRequest("Missing Brand");
+        }
+
         var productId = await _productHandler.AddAsync(productDto);
         _logger.LogInformation($"The {productDto.Name} has been added with the Id:{productDto.Id}.");
         return CreatedAtAction("Get", productId);
@@ -80,9 +85,15 @@ public class ProductController : ControllerBase
     /// <returns>The product with data updated.</returns>
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put([FromHeader] Guid id, [FromRoute] ProductDto productDto)
-    {
-        try
+	{
+        // TODO : It look like a middleware pattern could be usefull here
+        if (productDto.Brand == null)
         {
+            return BadRequest("Missing Brand");
+        }
+
+		try
+		{
             var updatedProduct = await _productHandler.UpdateAsync(productDto);
             _logger.LogInformation($"Updated product Id:{id}");
             return Ok(updatedProduct);
