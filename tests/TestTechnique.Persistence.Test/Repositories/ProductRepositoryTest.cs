@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +11,6 @@ namespace TestTechnique.Persistence.Test.Repositories;
 
 public class ProductRepositoryTest
 {
-	public ProductRepositoryTest()
-	{
-		// probably better to do https://stackoverflow.com/questions/54219742/mocking-ef-core-dbcontext-and-dbset
-	}
-
 	[Fact]
 	public async Task Get_Many()
 	{
